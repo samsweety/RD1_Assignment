@@ -1,0 +1,9 @@
+create database weather;
+use weather;
+create table wd3day(
+	wd3id int AUTO_INCREMENT PRIMARY KEY,
+    location varchar(10) not null,
+    starttime datetime not null,
+    endtime datetime not null,
+    wx varchar(100)
+)

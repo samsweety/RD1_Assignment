@@ -1,0 +1,75 @@
+0雲林縣
+1南投縣
+2連江縣
+3臺東縣
+4金門縣
+5宜蘭縣
+6屏東縣
+7苗栗縣
+8澎湖縣
+9臺北市
+10新竹縣
+11花蓮縣
+12高雄市
+13彰化縣
+14新竹市
+15新北市
+16基隆市
+17臺中市
+18臺南市
+19桃園市
+20嘉義縣
+21嘉義市
+
+
+records->locations->0->location->0~21->locationName 縣市名 
+
+records->locations->0->location->0~21->weatherElement-> 
+        0->elementName   pop12h
+           time->0~5->startTime  十二小時區間
+                    ->endTime
+                    ->elementValue->0->value   數值(%)
+
+        1->elementName   wx
+           time->0~23->startTime  三小時區間
+                     ->endTime
+                     ->elementValue->0->value   (描述天氣的字串)
+
+        2->elementName   AT
+           time->0~23->dataTime
+                     ->elementValue->0->value   溫度(攝氏（Ｃ）)
+
+        3->elementName   T 
+           time->0~23->dataTime
+                     ->elementValue->0->value   溫度(攝氏（Ｃ）)
+
+        4->elementName   RH
+           time->0~23->dataTime
+                     ->elementValue->0->value   數值(%)
+
+        5->elementName   CI
+           time->0~23->dataTime
+                     ->elementValue->1->value   (描述舒適度的字串)
+
+        6->elementName   WeatherDescription
+           time->0~23->startTime  三小時區間
+                    ->endTime
+                    ->elementValue->0->value     天氣．降雨機率．溫度．舒適度．風向．風速．濕度
+
+        7->elementName   pop6h 
+           time->0~11->startTime  六小時區間
+                    ->endTime
+                    ->elementValue->0->value   數值(%)
+
+        8->elementName   WS 
+           time->0~23->dataTime   
+                     ->elementValue->0->value  數值(m/s)
+                                     1->value  數值(級風)
+
+        9->elementName   WD
+           time->0~23->dataTime   
+                     ->elementValue->0->value  風向字串(１６方向)
+
+        10->elementName  TD
+            time->0~23->dataTime   
+                     ->elementValue->0->value  溫度(攝氏（Ｃ）)
