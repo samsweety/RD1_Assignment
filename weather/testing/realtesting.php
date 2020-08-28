@@ -12,7 +12,6 @@
           $url="https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-CB17D7D0-16B0-499C-B985-3746EFEE37A4&elementName=WeatherDescription";
           $data=file_get_contents($url);
           if($data==false){
-              exit();
               echo $data;
           }
           $data=json_decode($data,true);
@@ -22,7 +21,7 @@
                 $name=$r[$i]["locationName"];
                 $w=$r[$i]["weatherElement"][0]["time"];
                 for($j=0;$j<24;$j++){
-                    echo $w[$j]["startTime"]."至".$w[$j]["endTime"]."  ：".$w[$j]["elementValue"][0]["value"]."<br><br>";
+                    echo $w[$j]["startTime"]." 到 ".$w[$j]["endTime"]."  ：".$w[$j]["elementValue"][0]["value"]."<br><br>";
                     $starttime=$w[$j]["startTime"];
                     $endtime=$w[$j]["endTime"];
                     $wdesc=$w[$j]["elementValue"][0]["value"];

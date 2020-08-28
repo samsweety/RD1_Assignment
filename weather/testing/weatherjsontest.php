@@ -5,7 +5,7 @@
     </head>
     <body>
         <?php
-          $url="https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-089?Authorization=CWB-CB17D7D0-16B0-499C-B985-3746EFEE37A4&elementName=WeatherDescription";
+          $url="https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-CB17D7D0-16B0-499C-B985-3746EFEE37A4&limit=1&elementName=RAIN&elementName=HOUR_24";
           $data=file_get_contents($url);
           $data=json_decode($data,true);
           echo "<pre>";
