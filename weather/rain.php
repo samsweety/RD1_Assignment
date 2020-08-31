@@ -34,9 +34,6 @@
         <li class="nav-item">
             <a class="nav-link" style="color:#484891" href="rain.php">累計雨量</a>
         </li>        
-        <li class="nav-item">
-            <a class="nav-link" style="color:red" href="predict.php">天氣預報</a>
-        </li> 
     </ul>  
 </nav>
 

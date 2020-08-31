@@ -26,3 +26,21 @@ TOWN_SN ＾編號
 
 1. 雨量值小於 0.00 皆表示該時刻因故無資料。
 2. 雨量值為 -998.00 表示RAIN=MIN_10=HOUR_3=HOUR_6=0.00。
+
+
+一週預報0~14
+pop12h
+T
+RH
+MinCI 3
+WS
+MaxAT
+Wx
+MaxCI 7
+MinT
+UVI   紫外線
+weatherDescription
+MinAT
+MaxT
+WD
+Td  14
