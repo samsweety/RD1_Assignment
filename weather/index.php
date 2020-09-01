@@ -2,7 +2,7 @@
   $link=mysqli_connect("localhost","root","root","weather");
   mysqli_query($link,"set names utf-8");
   date_default_timezone_set("Asia/Taipei");
-
+  $weekarray=array("日","一","二","三","四","五","六");
 //   $string="多雲午後短暫雷陣雨。降雨機率 30%。溫度攝氏26至34度。舒適至易中暑。東北風 風速2級(每秒2公尺)。相對濕度78%。";
 //   $arr=explode("。",$string);
 //   for($i=0;$i<count($arr);$i++){
@@ -42,7 +42,8 @@
     <thead>
       <tr>
         <th><form method="post">
-        <select name="city">
+        <select name="city" onchange="this.form.submit()">
+        <option disabled selected>>--choose--<</option>
           <?php           
             $sql=<<<sql
               select cid,cName from city;
@@ -52,17 +53,15 @@
             ?>
           <option value="<?=$row["cid"]?>"   <?= ($row["cid"]==$_POST["city"])?"selected":""?> ><?=$row["cName"]?></option>
           <?php }?>
-
-        </select >
-        <input type="submit" name="btnOK" class="btn-success" value="確認">
-        </form>
+        </select>        
+        </form>        
         </th>
       </tr>
     </thead>       
   </table>  
 </div>  
      
-<div class="container">
+<div class="container-fluid" >
   <div class="row">
     <div class="col-6"><?php  
         if(isset($_POST["city"])){
@@ -156,15 +155,22 @@
           $r=$data["records"]["locations"][0]["location"][0]["weatherElement"];
            ?>
 
-            <table class="table align-middle" border="1" style="border:2px black solid;text-align:center">
-
+            <table class="table align-middle" border="1" style="border:2px black solid;text-align:center;table-layout:fixed">
+            <thead><tr><th style="width:30%">星期</th><th style="width:50%">未來一週天氣氣象</th><th style="width:20%">紫外線指數</th></tr>
+            </thead><tbody>
+            
             <?php for($i=0;$i<7;$i++){ ?>
 
-            <tr><td  class="align-middle" rowspan="2"><?= "@@@@@" ?></td><td>表格欄位</td><td rowspan="2"></td></tr>
-            <tr><td>表格欄位</td></tr>
+            <tr><td  class="align-middle" rowspan="2"><?= substr($r[0]["time"][$i]["startTime"],0,10)."<br>星期".$weekarray[(date("w")+$i)%7] ?></td>
+
+            <td style="background-color:#C4E1FF"><?= $r[1]["time"][$i*2]["elementValue"][0]["value"]?></td>
+
+            <td class="align-middle" rowspan="2"><?= $r[0]["time"][$i]["elementValue"][0]["value"]."<br>".$r[0]["time"][$i]["elementValue"][1]["value"]?></td></tr>
+
+            <tr><td style="background-color:#8080C0"><?= $r[1]["time"][$i*2+1]["elementValue"][0]["value"]?></td></tr>
 
             <?php }?>
-
+            </tbody>
             </table>
 
             <?php          
@@ -175,3 +181,4 @@
 </div>
 </body>
 </html>
+
