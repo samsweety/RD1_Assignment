@@ -116,6 +116,7 @@
         </tr>
       <?php if($i==0){?><tr><td style="color:red">未來兩天天氣預報</td></tr> <?php }
         }}else{
+          echo "公開ＡＰＩ當機，顯示暫存資料";
         $sqls=<<<sql
             select starttime,endtime,weds from wd3day where location="$cName";
           sql;
@@ -150,32 +151,72 @@
         $cName=$row["cName"];
         $url="https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-CB17D7D0-16B0-499C-B985-3746EFEE37A4&elementName=UVI&elementName=WeatherDescription&locationName=".rawurlencode($cName);
         $data=file_get_contents($url);
-        if($data){
+        if($data){          
           $data=json_decode($data,true);
           $r=$data["records"]["locations"][0]["location"][0]["weatherElement"];
+          $sqli="";
            ?>
 
             <table class="table align-middle" border="1" style="border:2px black solid;text-align:center;table-layout:fixed">
             <thead><tr><th style="width:30%">星期</th><th style="width:50%">未來一週天氣氣象</th><th style="width:20%">紫外線指數</th></tr>
             </thead><tbody>
             
-            <?php for($i=0;$i<7;$i++){ ?>
+            <?php for($i=0;$i<7;$i++){ 
+                $datetime=substr($r[0]["time"][$i]["startTime"],0,10);
+                $desc1=$r[1]["time"][$i*2]["elementValue"][0]["value"];
+                $desc2=$r[1]["time"][$i*2+1]["elementValue"][0]["value"];
+                $uvi=$r[0]["time"][$i]["elementValue"][0]["value"];
+                $uvidesc=$r[0]["time"][$i]["elementValue"][1]["value"];
+                $sqld=<<<sql
+                    delete from weekpredict where cid=$cid&&preDate="$datetime";
+                  sql;
+                mysqli_query($link,$sqld);
+                $sqli.=<<<sql
+                  insert into weekpredict (cid,preDate,preDesc,uvi,uvidesc) values ($cid,"$datetime","$desc1",$uvi,"$uvidesc");
+                  insert into weekpredict (cid,preDate,preDesc) values ($cid,"$datetime","$desc2");
+                sql;
+                
+              ?>
 
-            <tr><td  class="align-middle" rowspan="2"><?= substr($r[0]["time"][$i]["startTime"],0,10)."<br>星期".$weekarray[(date("w")+$i)%7] ?></td>
+            <tr><td  class="align-middle" rowspan="2"><?= $datetime."<br>星期".$weekarray[(date("w")+$i)%7] ?></td>
 
-            <td style="background-color:#C4E1FF"><?= $r[1]["time"][$i*2]["elementValue"][0]["value"]?></td>
+            <td style="background-color:#C4E1FF"><?= $desc1?></td>
 
-            <td class="align-middle" rowspan="2"><?= $r[0]["time"][$i]["elementValue"][0]["value"]."<br>".$r[0]["time"][$i]["elementValue"][1]["value"]?></td></tr>
+            <td class="align-middle" rowspan="2"><?= $uvi."<br>".$uvidesc ?></td></tr>
 
-            <tr><td style="background-color:#8080C0"><?= $r[1]["time"][$i*2+1]["elementValue"][0]["value"]?></td></tr>
+            <tr><td style="background-color:#8080C0"><?= $desc2?></td></tr>
 
             <?php }?>
             </tbody>
-            </table>
+            </table>            
+            <?php       
+               mysqli_multi_query($link,$sqli);
+            }else{
+              echo "公開ＡＰＩ當機，顯示暫存資料";
+              $sqls=<<<sql
+                  select * from weekpredict where cid=$cid;
+                sql;
+              $results=mysqli_query($link,$sqls);
+           ?>
 
-            <?php          
-        }
-      }?>
+            <table class="table align-middle" border="1" style="border:2px black solid;text-align:center;table-layout:fixed">
+            <thead><tr><th style="width:30%">星期</th><th style="width:50%">未來一週天氣氣象</th><th style="width:20%">紫外線指數</th></tr>
+            </thead><tbody>
+            
+            <?php for($i=0;$rows=mysqli_fetch_assoc($results);$i++){ 
+              if($i%2==0){
+              ?>
+            <tr><td  class="align-middle" rowspan="2"><?= $rows["preDate"]."<br>星期".$weekarray[(date("w")+$i/2)%7] ?></td> 
+
+            <td style="background-color:#C4E1FF"><?= $rows["preDesc"]?></td>  
+            
+            <td class="align-middle" rowspan="2"><?= $rows["uvi"]."<br>".$rows["uvidesc"]?></td></tr>
+            <?php }?>
+            <?php if($i%2==1){?>
+            <tr><td style="background-color:#8080C0"><?= $rows["preDesc"]?></td></tr>
+
+            <?php }}
+      }}?>
     </div>
   </div>
 </div>

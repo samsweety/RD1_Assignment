@@ -1,0 +1,6 @@
+create table rain(
+    ocode varchar(15) not null,
+    aHour float,
+    aDay float
+)
+

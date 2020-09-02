@@ -108,33 +108,70 @@
     <div class="col-6">
       <table class="table">
           <?php if(isset($_POST["station"])){
+            $ocode=$_POST["station"];
             $url="https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0002-001?Authorization=CWB-CB17D7D0-16B0-499C-B985-3746EFEE37A4&elementName=RAIN&elementName=NOW&stationId=".$_POST["station"];
             $data=file_get_contents($url);
+            if($data){
             $data=json_decode($data,true);
             $r=$data["records"]["location"][0]["weatherElement"];
-            ?>
-            
+            $rain1=($r[0]["elementValue"]>0)?$r[0]["elementValue"]:0.00;
+            $rain24=($r[1]["elementValue"]>0)?$r[1]["elementValue"]:0.00;
+            $sql=<<<sql
+                delete from rain where ocode="$ocode";
+              sql;
+            mysqli_query($link,$sql);
+            $sqli=<<<sql
+                insert into rain (ocode,aHour,aDay) values ("$ocode",$rain1,$rain24);
+              sql;
+            mysqli_query($link,$sqli);
+            ?>            
             <thead>
               <tr>
                 <th>編號</th>
-                <th><?= $_POST["station"]?></th>
+                <th><?= $ocode?></th>
               </tr>
             </thead>
             <tbody>
               <tr> 
                 <td>近一小時累計雨量</td>
-                <td><?= (($r[0]["elementValue"]<0)?"0":$r[0]["elementValue"])."mm"?></td>
+                <td><?= $rain1."mm"?></td>
               </tr>
               <tr> 
                 <td>本日累計雨量</td>
-                <td><?= $r[1]["elementValue"]."mm"?></td>
+                <td><?= $rain24."mm"?></td>
               </tr>
             </tbody>
-
-
-            
             <?php
+          ?>
+          <?php  }else{
+            echo "公開ＡＰＩ當機，顯示暫存資料";
+            $sql=<<<sql
+                select * from rain where ocode="$ocode";
+              sql;
+            $result=mysqli_query($link,$sql);
+            $row=mysqli_fetch_assoc($result);?>
+            <thead>
+            <tr>
+              <th>編號</th>
+              <th><?= $row["ocode"]?></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr> 
+              <td>近一小時累計雨量</td>
+              <td><?= $row["aHour"]."mm"?></td>
+            </tr>
+            <tr> 
+              <td>本日累計雨量</td>
+              <td><?= $row["aDay"]."mm"?></td>
+            </tr>
+          </tbody>
+          <?php
+          }
           }?>
+            
+            
+            
         </table>
     </div>
 
