@@ -91,15 +91,16 @@
       $data=json_decode($data,true);
       $r=$data["records"]["locations"][0]["location"];
       $w=$r[0]["weatherElement"][0]["time"];
-      $sqld=<<<sql
-        delete from wd3day where location="$cName";
-      sql;
-      mysqli_query($link,$sqld);
+      
       for($i=0;$i<17;$i++){
         $startTime=$w[$i]["startTime"];
         $endTime=$w[$i]["endTime"];
         $desc=$w[$i]["elementValue"][0]["value"];  
-        $descArr=explode("。",$desc);       
+        $descArr=explode("。",$desc);   
+        $sqld=<<<sql
+            delete from wd3day where location="$cName"&&starttime="$startTime";
+          sql;
+        mysqli_query($link,$sqld);    
         $sqldesc=<<<sql
             insert into wd3day (location,starttime,endtime,weds) values ("$cName","$startTime","$endTime","$desc");
           sql;
