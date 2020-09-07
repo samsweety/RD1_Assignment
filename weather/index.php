@@ -1,5 +1,5 @@
 <?php
-  $link=mysqli_connect("localhost","root","root","weather");
+  $link=mysqli_connect("localhost","sam","55688","weather");
   mysqli_query($link,"set names utf-8");
   date_default_timezone_set("Asia/Taipei");
   $weekarray=array("日","一","二","三","四","五","六");
